@@ -1,4 +1,7 @@
 import React from 'react';
+import PdfSimple from './PdfSimple';
+// @ts-ignore
+import pdfDummy from './OoPdfFormExample.pdf';
 import logo from './logo.svg';
 import './App.css';
 
@@ -19,6 +22,9 @@ function App() {
           Learn React
         </a>
       </header>
+      <PdfSimple
+        file={`http://localhost:3000${pdfDummy}`}
+      />
     </div>
   );
 }
