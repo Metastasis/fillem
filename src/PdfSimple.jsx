@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, {useMemo, useState, useRef} from 'react';
 import {Document, Page, pdfjs} from 'react-pdf';
 import pdfjsWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -26,14 +26,15 @@ export default function Test(props) {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchText, setSearchText] = useState('');
+  const inputs = useRef(null);
   const textRenderer = useMemo((textItem = {str: ''}) => {
     return highlightPattern(textItem.str, searchText);
   }, [searchText]);
   function onChange(event) {
     setSearchText(event.target.value);
   }
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
+  function onDocumentLoadSuccess(pdf) {
+    setNumPages(pdf.numPages);
     setPageNumber(1);
   }
   function changePage(offset) {
@@ -45,19 +46,19 @@ export default function Test(props) {
   function nextPage() {
     changePage(1);
   }
+  console.log(inputs.current);
   return (
     <>
       <Document
         key={file.url}
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
-        renderInteractiveForms={true}
-        onItemClick={console.log}
+        renderMode="svg"
       >
         <Page
           pageNumber={pageNumber}
           renderInteractiveForms={true}
-          onItemClick={console.log}
+          inputRef={inputs}
         />
       </Document>
       <div>
